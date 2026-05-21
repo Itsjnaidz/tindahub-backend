@@ -30,6 +30,15 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Root Route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'TindaHub Backend is running',
+    availableRoutes: ['/health', '/api/auth', '/api/product', '/api/cart', '/api/order'],
+  });
+});
+
 // Health Check Route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
@@ -47,6 +56,13 @@ app.use('/api/payment', authMiddleware, paymentRoutes);
 app.use('/api/product', authMiddleware, productRoutes);
 app.use('/api/store', storeRoutes);
 app.use('/api/wallet', authMiddleware, walletRoutes);
+
+// Not Found Handler
+app.use((req, res, next) => {
+  const error = new Error('Route not found');
+  error.statusCode = 404;
+  next(error);
+});
 
 // Error Handling Middleware (must be last)
 app.use(errorHandler);
