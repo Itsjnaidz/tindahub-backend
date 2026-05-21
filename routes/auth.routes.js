@@ -3,6 +3,18 @@ const router = express.Router();
 const authController = require('../controllers/auth.controller');
 
 /**
+ * GET /api/auth
+ * Auth route info
+ */
+router.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Auth service is running',
+    availableRoutes: ['/generate-otp', '/verify-otp', '/logout'],
+    method: 'POST',
+  });
+});
+
+/**
  * POST /api/auth/generate-otp
  * Generate OTP for user authentication
  */
