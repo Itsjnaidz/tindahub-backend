@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth.controller');
+const { authMiddleware } = require('../middleware/auth');
 
 /**
  * GET /api/auth
@@ -30,6 +31,6 @@ router.post('/verify-otp', authController.verifyOTP);
  * POST /api/auth/logout
  * Logout user
  */
-router.post('/logout', authController.logout);
+router.post('/logout', authMiddleware, authController.logout);
 
 module.exports = router;

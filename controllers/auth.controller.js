@@ -1,4 +1,4 @@
-const { supabase } = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
@@ -18,8 +18,8 @@ exports.generateOTP = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // Store OTP in Supabase
-    const { data, error } = await supabase
+    // Store OTP in Supabase using service role client so RLS policies do not block insert.
+    const { data, error } = await supabaseAdmin
       .from('otp_requests')
       .upsert([{ phone, otp, expires_at: otpExpiry }], { onConflict: 'phone' });
 
@@ -48,8 +48,8 @@ exports.verifyOTP = async (req, res) => {
       return res.status(400).json({ error: 'Phone and OTP are required' });
     }
 
-    // Retrieve OTP from Supabase
-    const { data: otpData, error: otpError } = await supabase
+    // Retrieve OTP from Supabase using service role client for RLS-safe lookup.
+    const { data: otpData, error: otpError } = await supabaseAdmin
       .from('otp_requests')
       .select('*')
       .eq('phone', phone)
@@ -69,7 +69,7 @@ exports.verifyOTP = async (req, res) => {
     }
 
     // Check if user exists
-    let { data: userData, error: userError } = await supabase
+    let { data: userData, error: userError } = await supabaseAdmin
       .from('users')
       .select('*')
       .eq('phone', phone)
@@ -83,7 +83,7 @@ exports.verifyOTP = async (req, res) => {
         created_at: new Date(),
       };
 
-      const { data: createdUser, error: createError } = await supabase
+      const { data: createdUser, error: createError } = await supabaseAdmin
         .from('users')
         .insert([newUser]);
 
@@ -99,7 +99,7 @@ exports.verifyOTP = async (req, res) => {
     );
 
     // Delete used OTP
-    await supabase.from('otp_requests').delete().eq('phone', phone);
+    await supabaseAdmin.from('otp_requests').delete().eq('phone', phone);
 
     res.status(200).json({
       message: 'OTP verified successfully',
