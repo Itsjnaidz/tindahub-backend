@@ -1,4 +1,4 @@
-const { supabase } = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 
