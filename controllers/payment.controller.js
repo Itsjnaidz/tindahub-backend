@@ -18,7 +18,7 @@ exports.processGCashPayment = async (req, res) => {
 
     const transactionId = uuidv4();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('transactions')
       .insert([
         {
@@ -59,7 +59,7 @@ exports.processMayaPayment = async (req, res) => {
 
     const transactionId = uuidv4();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('transactions')
       .insert([
         {
@@ -91,7 +91,7 @@ exports.getTransactionHistory = async (req, res) => {
   try {
     const { orderId } = req.params;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('transactions')
       .select('*')
       .eq('order_id', orderId);

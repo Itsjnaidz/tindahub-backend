@@ -8,7 +8,7 @@ exports.getMerchantAnalytics = async (req, res) => {
     const merchantId = req.user.id;
 
     // Get total sales
-    const { data: salesData, error: salesError } = await supabase
+    const { data: salesData, error: salesError } = await supabaseAdmin
       .from('orders')
       .select('total_amount')
       .eq('merchant_id', merchantId)
@@ -19,7 +19,7 @@ exports.getMerchantAnalytics = async (req, res) => {
     const totalSales = salesData.reduce((sum, order) => sum + order.total_amount, 0);
 
     // Get total orders
-    const { data: ordersData, error: ordersError } = await supabase
+    const { data: ordersData, error: ordersError } = await supabaseAdmin
       .from('orders')
       .select('id')
       .eq('merchant_id', merchantId);
@@ -29,7 +29,7 @@ exports.getMerchantAnalytics = async (req, res) => {
     const totalOrders = ordersData.length;
 
     // Get total products
-    const { data: productsData, error: productsError } = await supabase
+    const { data: productsData, error: productsError } = await supabaseAdmin
       .from('products')
       .select('id')
       .eq('merchant_id', merchantId)
@@ -40,7 +40,7 @@ exports.getMerchantAnalytics = async (req, res) => {
     const totalProducts = productsData.length;
 
     // Get total customers
-    const { data: customersData, error: customersError } = await supabase
+    const { data: customersData, error: customersError } = await supabaseAdmin
       .from('orders')
       .select('customer_id')
       .eq('merchant_id', merchantId);
@@ -67,7 +67,7 @@ exports.getOrderAnalytics = async (req, res) => {
   try {
     const merchantId = req.user.id;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .select('*')
       .eq('merchant_id', merchantId);

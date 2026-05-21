@@ -13,7 +13,7 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .insert([
         {
@@ -47,7 +47,7 @@ exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .select('*')
       .eq('customer_id', userId)
@@ -68,7 +68,7 @@ exports.getOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .select('*')
       .eq('id', orderId)
@@ -95,7 +95,7 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(400).json({ error: 'Invalid order status' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .update({ status, updated_at: new Date() })
       .eq('id', orderId)
@@ -120,7 +120,7 @@ exports.cancelOrder = async (req, res) => {
     const { orderId } = req.params;
     const { reason } = req.body;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .update({ status: 'cancelled', cancellation_reason: reason || null })
       .eq('id', orderId)

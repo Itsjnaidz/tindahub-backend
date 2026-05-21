@@ -13,7 +13,7 @@ exports.createProduct = async (req, res) => {
       return res.status(400).json({ error: 'name, price, and stock are required' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .insert([
         {
@@ -48,7 +48,7 @@ exports.getMerchantProducts = async (req, res) => {
   try {
     const merchantId = req.user.id;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .select('*')
       .eq('merchant_id', merchantId)
@@ -70,7 +70,7 @@ exports.getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .select('*')
       .eq('id', productId)
@@ -100,7 +100,7 @@ exports.updateProduct = async (req, res) => {
     if (stock !== undefined) payload.stock = stock;
     if (image !== undefined) payload.image = image;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .update(payload)
       .eq('id', productId)
@@ -124,7 +124,7 @@ exports.deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .update({ deleted_at: new Date() })
       .eq('id', productId)
@@ -153,7 +153,7 @@ exports.updateInventory = async (req, res) => {
       return res.status(400).json({ error: 'Valid quantity is required' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .update({ stock: quantity })
       .eq('id', productId)

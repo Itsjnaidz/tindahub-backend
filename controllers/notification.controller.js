@@ -15,7 +15,7 @@ exports.sendSMSNotification = async (req, res) => {
     // Mock SMS dispatch - in production, integrate with SMS provider
     console.log(`SMS to ${phone}: ${message}`);
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('notifications')
       .insert([
         {
@@ -53,7 +53,7 @@ exports.sendWhatsAppNotification = async (req, res) => {
     // Mock WhatsApp dispatch - in production, integrate with WhatsApp provider
     console.log(`WhatsApp to ${phone}: ${message}`);
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('notifications')
       .insert([
         {
@@ -84,7 +84,7 @@ exports.getNotificationHistory = async (req, res) => {
   try {
     const { limit = 50 } = req.query;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('notifications')
       .select('*')
       .order('created_at', { ascending: false })

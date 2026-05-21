@@ -14,7 +14,7 @@ exports.addToCart = async (req, res) => {
     }
 
     // Check if product exists
-    const { data: product, error: productError } = await supabase
+    const { data: product, error: productError } = await supabaseAdmin
       .from('products')
       .select('*')
       .eq('id', productId)
@@ -26,7 +26,7 @@ exports.addToCart = async (req, res) => {
     }
 
     // Check if item already in cart
-    const { data: existingItem } = await supabase
+    const { data: existingItem } = await supabaseAdmin
       .from('cart_items')
       .select('*')
       .eq('user_id', userId)
@@ -37,7 +37,7 @@ exports.addToCart = async (req, res) => {
 
     if (existingItem) {
       // Update quantity
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('cart_items')
         .update({ quantity: existingItem.quantity + quantity })
         .eq('id', existingItem.id)
@@ -47,7 +47,7 @@ exports.addToCart = async (req, res) => {
       cartItem = data[0];
     } else {
       // Create new cart item
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('cart_items')
         .insert([
           {
@@ -80,7 +80,7 @@ exports.getCart = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('cart_items')
       .select('*, product:products(*)')
       .eq('user_id', userId);
@@ -110,7 +110,7 @@ exports.updateCartItem = async (req, res) => {
       return res.status(400).json({ error: 'Valid quantity is required' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('cart_items')
       .update({ quantity })
       .eq('id', cartItemId)
@@ -134,7 +134,7 @@ exports.removeFromCart = async (req, res) => {
   try {
     const { cartItemId } = req.params;
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('cart_items')
       .delete()
       .eq('id', cartItemId);
@@ -154,7 +154,7 @@ exports.clearCart = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('cart_items')
       .delete()
       .eq('user_id', userId);

@@ -13,7 +13,7 @@ exports.registerStore = async (req, res) => {
       return res.status(400).json({ error: 'name, address, and contactPhone are required' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('stores')
       .insert([
         {
@@ -44,7 +44,7 @@ exports.getStoreInfo = async (req, res) => {
   try {
     const { storeId } = req.params;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('stores')
       .select('*')
       .eq('id', storeId)
@@ -74,7 +74,7 @@ exports.updateStore = async (req, res) => {
     if (email !== undefined) payload.email = email;
     payload.updated_at = new Date();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('stores')
       .update(payload)
       .eq('id', storeId)

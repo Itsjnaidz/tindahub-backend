@@ -1,0 +1,1205 @@
+{
+  "info": {
+    "name": "TindaHub Backend API",
+    "_postman_id": "5a1b7d9e-8cbe-4b85-9f3f-1df9fa7a14bf",
+    "description": "Collection for TindaHub Backend endpoints. Set {{baseUrl}} to https://tindahub-backend.onrender.com.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://tindahub-backend.onrender.com",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Root /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Health /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Auth info /api/auth",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Generate OTP /api/auth/generate-otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"09171234567\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/generate-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "generate-otp"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP /api/auth/verify-otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"09171234567\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify-otp"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout /api/auth/logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Merchant analytics /api/analytics/merchant",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/merchant",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "merchant"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Order analytics /api/analytics/orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytics/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "orders"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Add to cart /api/cart/add",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"abc123\",\n  \"quantity\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cart/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "add"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get cart /api/cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update cart item /api/cart/:cartItemId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cart/{{cartItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "{{cartItemId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remove cart item /api/cart/:cartItemId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart/{{cartItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "{{cartItemId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Clear cart /api/cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Create category /api/category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Category\",\n  \"description\": \"Optional description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "category"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get categories /api/category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "category"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update category /api/category/:categoryId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Category Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/category/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "category",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete category /api/category/:categoryId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/category/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "category",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delivery",
+      "item": [
+        {
+          "name": "Set tracking /api/delivery/tracking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"order123\",\n  \"trackingNumber\": \"TRK123456\",\n  \"carrier\": \"Example Carrier\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/delivery/tracking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "delivery",
+                "tracking"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get tracking /api/delivery/tracking/:orderId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/delivery/tracking/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "delivery",
+                "tracking",
+                "{{orderId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update delivery status /api/delivery/:orderId/status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Delivered\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/delivery/{{orderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "delivery",
+                "{{orderId}}",
+                "status"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "Send SMS /api/notification/sms",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"09171234567\",\n  \"message\": \"Hello from TindaHub\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notification/sms",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notification",
+                "sms"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Send WhatsApp /api/notification/whatsapp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"09171234567\",\n  \"message\": \"Hello from TindaHub\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notification/whatsapp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notification",
+                "whatsapp"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Notification history /api/notification/history",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/notification/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notification",
+                "history"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Create order /api/order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"productId\": \"abc123\", \"quantity\": 1 }\n  ],\n  \"shippingAddress\": \"123 Main St\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/order",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "order"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get orders /api/order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/order",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "order"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get order by ID /api/order/:orderId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/order/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "{{orderId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update order status /api/order/:orderId/status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Completed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/order/{{orderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "{{orderId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel order /api/order/:orderId/cancel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/order/{{orderId}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "order",
+                "{{orderId}}",
+                "cancel"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "Process GCash /api/payment/gcash",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"order123\",\n  \"amount\": 100.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payment/gcash",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payment",
+                "gcash"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Process Maya /api/payment/maya",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"order123\",\n  \"amount\": 100.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payment/maya",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payment",
+                "maya"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Transaction history /api/payment/transactions/:orderId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payment/transactions/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "payment",
+                "transactions",
+                "{{orderId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product",
+      "item": [
+        {
+          "name": "Create product /api/product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sample Product\",\n  \"price\": 199.99,\n  \"inventory\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "product"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get products /api/product",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "product"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get product /api/product/:productId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/product/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "product",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update product /api/product/:productId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 149.99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/product/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "product",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete product /api/product/:productId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/product/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "product",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update inventory /api/product/:productId/inventory",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inventory\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/product/{{productId}}/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "product",
+                "{{productId}}",
+                "inventory"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Store",
+      "item": [
+        {
+          "name": "Register store /api/store/register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Store\",\n  \"address\": \"123 Merchant Lane\",\n  \"contactPhone\": \"09171234567\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/store/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "store",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get store /api/store/:storeId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/store/{{storeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "store",
+                "{{storeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update store /api/store/:storeId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated store description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/store/{{storeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "store",
+                "{{storeId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wallet",
+      "item": [
+        {
+          "name": "Get wallet balance /api/wallet/balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallet/balance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallet",
+                "balance"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get wallet transactions /api/wallet/transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wallet/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallet",
+                "transactions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Withdraw funds /api/wallet/withdraw",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wallet/withdraw",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "wallet",
+                "withdraw"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

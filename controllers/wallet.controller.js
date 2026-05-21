@@ -7,7 +7,7 @@ exports.getWalletBalance = async (req, res) => {
   try {
     const merchantId = req.user.id;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('wallets')
       .select('balance')
       .eq('merchant_id', merchantId)
@@ -32,7 +32,7 @@ exports.getWalletTransactions = async (req, res) => {
     const merchantId = req.user.id;
     const { limit = 50 } = req.query;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('wallet_transactions')
       .select('*')
       .eq('merchant_id', merchantId)
@@ -60,7 +60,7 @@ exports.withdrawFunds = async (req, res) => {
     }
 
     // Get current balance
-    const { data: walletData, error: walletError } = await supabase
+    const { data: walletData, error: walletError } = await supabaseAdmin
       .from('wallets')
       .select('balance')
       .eq('merchant_id', merchantId)
@@ -74,7 +74,7 @@ exports.withdrawFunds = async (req, res) => {
 
     // Update wallet balance
     const newBalance = walletData.balance - amount;
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('wallets')
       .update({ balance: newBalance })
       .eq('merchant_id', merchantId)

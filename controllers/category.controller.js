@@ -13,7 +13,7 @@ exports.createCategory = async (req, res) => {
       return res.status(400).json({ error: 'Category name is required' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('categories')
       .insert([
         {
@@ -45,7 +45,7 @@ exports.getCategories = async (req, res) => {
   try {
     const merchantId = req.user.id;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('categories')
       .select('*')
       .eq('merchant_id', merchantId)
@@ -67,7 +67,7 @@ exports.updateCategory = async (req, res) => {
     const { categoryId } = req.params;
     const { name, description, icon } = req.body;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('categories')
       .update({
         name: name || undefined,
@@ -95,7 +95,7 @@ exports.deleteCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('categories')
       .delete()
       .eq('id', categoryId);

@@ -12,7 +12,7 @@ exports.setTrackingInfo = async (req, res) => {
       return res.status(400).json({ error: 'orderId, trackingNumber, and carrier are required' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('deliveries')
       .insert([
         {
@@ -44,7 +44,7 @@ exports.getTrackingInfo = async (req, res) => {
   try {
     const { orderId } = req.params;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('deliveries')
       .select('*')
       .eq('order_id', orderId)
@@ -71,7 +71,7 @@ exports.updateDeliveryStatus = async (req, res) => {
       return res.status(400).json({ error: 'Invalid delivery status' });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('orders')
       .update({ delivery_status: status })
       .eq('id', orderId)
