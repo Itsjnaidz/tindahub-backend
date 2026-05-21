@@ -57,11 +57,9 @@ app.use('/api/product', authMiddleware, productRoutes);
 app.use('/api/store', storeRoutes);
 app.use('/api/wallet', authMiddleware, walletRoutes);
 
-// Not Found Handler
-app.use((req, res, next) => {
-  const error = new Error('Route not found');
-  error.statusCode = 404;
-  next(error);
+// Not Found Handler — respond directly to avoid noisy error stacks for common 404s
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Error Handling Middleware (must be last)
