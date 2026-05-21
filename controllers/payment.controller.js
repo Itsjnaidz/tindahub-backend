@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 
@@ -7,10 +7,25 @@ const { v4: uuidv4 } = require('uuid');
  */
 exports.processGCashPayment = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { orderId, amount, gcashNumber } = req.body;
 
     if (!orderId || !amount || !gcashNumber) {
       return res.status(400).json({ error: 'Missing required payment fields' });
+    }
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.customer_id !== userId) {
+      return res.status(403).json({ error: 'Access denied' });
     }
 
     // Mock GCash API call - replace with actual GCash integration
@@ -48,10 +63,25 @@ exports.processGCashPayment = async (req, res) => {
  */
 exports.processMayaPayment = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { orderId, amount, cardToken } = req.body;
 
     if (!orderId || !amount || !cardToken) {
       return res.status(400).json({ error: 'Missing required payment fields' });
+    }
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.customer_id !== userId) {
+      return res.status(403).json({ error: 'Access denied' });
     }
 
     // Mock Maya API call - replace with actual Maya integration
@@ -89,7 +119,22 @@ exports.processMayaPayment = async (req, res) => {
  */
 exports.getTransactionHistory = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { orderId } = req.params;
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.customer_id !== userId && order.merchant_id !== userId) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
 
     const { data, error } = await supabaseAdmin
       .from('transactions')

@@ -1,5 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
-const bcrypt = require('bcryptjs');
+const { supabaseAdmin } = require('../config/supabase');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 
@@ -85,10 +84,11 @@ exports.verifyOTP = async (req, res) => {
 
       const { data: createdUser, error: createError } = await supabaseAdmin
         .from('users')
-        .insert([newUser]);
+        .insert([newUser])
+        .select();
 
       if (createError) throw createError;
-      userData = newUser;
+      userData = createdUser?.[0] || newUser;
     }
 
     // Generate JWT token

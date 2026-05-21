@@ -1,0 +1,198 @@
+TindaHub Backend API Endpoints
+
+Base URL placeholder: {{baseUrl}}
+
+Notes:
+- All /api/* endpoints require the header: Authorization: Bearer {{authToken}}
+- Use Content-Type: application/json for POST and PUT requests
+
+Public Endpoints
+----------------
+GET  {{baseUrl}}/                     - Body: none
+GET  {{baseUrl}}/health               - Body: none
+GET  {{baseUrl}}/api/auth             - Body: none
+
+Auth Endpoints
+--------------
+POST {{baseUrl}}/api/auth/generate-otp
+  Body:
+  {
+    "phone": "09171234567"
+  }
+
+POST {{baseUrl}}/api/auth/verify-otp
+  Body:
+  {
+    "phone": "09171234567",
+    "otp": "123456"
+  }
+
+POST {{baseUrl}}/api/auth/logout      - Body: none
+
+Analytics Endpoints
+-------------------
+GET  {{baseUrl}}/api/analytics/merchant   - Body: none
+GET  {{baseUrl}}/api/analytics/orders     - Body: none
+
+Cart Endpoints
+--------------
+POST   {{baseUrl}}/api/cart/add
+  Body:
+  {
+    "productId": "abc123",
+    "quantity": 1
+  }
+
+GET    {{baseUrl}}/api/cart               - Body: none
+PUT    {{baseUrl}}/api/cart/{{cartItemId}}
+  Body:
+  {
+    "quantity": 2
+  }
+
+DELETE {{baseUrl}}/api/cart/{{cartItemId}} - Body: none
+DELETE {{baseUrl}}/api/cart               - Body: none
+
+Category Endpoints
+------------------
+POST {{baseUrl}}/api/category
+  Body:
+  {
+    "name": "New Category",
+    "description": "Optional description"
+  }
+
+GET  {{baseUrl}}/api/category   - Body: none
+PUT  {{baseUrl}}/api/category/{{categoryId}}
+  Body:
+  {
+    "name": "Updated Category Name"
+  }
+
+DELETE {{baseUrl}}/api/category/{{categoryId}} - Body: none
+
+Delivery Endpoints
+------------------
+POST {{baseUrl}}/api/delivery/tracking
+  Body:
+  {
+    "orderId": "order123",
+    "trackingNumber": "TRK123456",
+    "carrier": "Example Carrier"
+  }
+
+GET  {{baseUrl}}/api/delivery/tracking/{{orderId}} - Body: none
+PUT  {{baseUrl}}/api/delivery/{{orderId}}/status
+  Body:
+  {
+    "status": "Delivered"
+  }
+
+Notification Endpoints
+----------------------
+POST {{baseUrl}}/api/notification/sms
+  Body:
+  {
+    "phone": "09171234567",
+    "message": "Hello from TindaHub"
+  }
+
+POST {{baseUrl}}/api/notification/whatsapp
+  Body:
+  {
+    "phone": "09171234567",
+    "message": "Hello from TindaHub"
+  }
+
+GET  {{baseUrl}}/api/notification/history - Body: none
+
+Order Endpoints
+---------------
+POST {{baseUrl}}/api/order
+  Body:
+  {
+    "items": [
+      { "productId": "abc123", "quantity": 1 }
+    ],
+    "shippingAddress": "123 Main St"
+  }
+
+GET  {{baseUrl}}/api/order               - Body: none
+GET  {{baseUrl}}/api/order/{{orderId}}   - Body: none
+PUT  {{baseUrl}}/api/order/{{orderId}}/status
+  Body:
+  {
+    "status": "Completed"
+  }
+
+PUT  {{baseUrl}}/api/order/{{orderId}}/cancel - Body: none
+
+Payment Endpoints
+-----------------
+POST {{baseUrl}}/api/payment/gcash
+  Body:
+  {
+    "orderId": "order123",
+    "amount": 100.00
+  }
+
+POST {{baseUrl}}/api/payment/maya
+  Body:
+  {
+    "orderId": "order123",
+    "amount": 100.00
+  }
+
+GET  {{baseUrl}}/api/payment/transactions/{{orderId}} - Body: none
+
+Product Endpoints
+-----------------
+POST {{baseUrl}}/api/product
+  Body:
+  {
+    "name": "Sample Product",
+    "price": 199.99,
+    "inventory": 10
+  }
+
+GET    {{baseUrl}}/api/product               - Body: none
+GET    {{baseUrl}}/api/product/{{productId}}  - Body: none
+PUT    {{baseUrl}}/api/product/{{productId}}
+  Body:
+  {
+    "price": 149.99
+  }
+
+DELETE {{baseUrl}}/api/product/{{productId}} - Body: none
+PUT    {{baseUrl}}/api/product/{{productId}}/inventory
+  Body:
+  {
+    "inventory": 20
+  }
+
+Store Endpoints
+---------------
+POST {{baseUrl}}/api/store/register
+  Body:
+  {
+    "name": "My Store",
+    "address": "123 Merchant Lane",
+    "contactPhone": "09171234567"
+  }
+
+GET  {{baseUrl}}/api/store/{{storeId}}   - Body: none
+PUT  {{baseUrl}}/api/store/{{storeId}}
+  Body:
+  {
+    "description": "Updated store description"
+  }
+
+Wallet Endpoints
+----------------
+GET  {{baseUrl}}/api/wallet/balance      - Body: none
+GET  {{baseUrl}}/api/wallet/transactions - Body: none
+POST {{baseUrl}}/api/wallet/withdraw
+  Body:
+  {
+    "amount": 50.00
+  }

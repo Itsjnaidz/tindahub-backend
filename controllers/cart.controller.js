@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -80,17 +80,44 @@ exports.getCart = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { data, error } = await supabaseAdmin
+    const { data: cartItems, error: cartError } = await supabaseAdmin
       .from('cart_items')
-      .select('*, product:products(*)')
+      .select('*')
       .eq('user_id', userId);
 
-    if (error) throw error;
+    if (cartError) throw cartError;
 
-    const total = data.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    if (!cartItems || cartItems.length === 0) {
+      return res.status(200).json({ items: [], total: 0 });
+    }
+
+    const productIds = [...new Set(cartItems.map((item) => item.product_id))];
+
+    const { data: products, error: productsError } = await supabaseAdmin
+      .from('products')
+      .select('*')
+      .in('id', productIds)
+      .is('deleted_at', null);
+
+    if (productsError) throw productsError;
+
+    const productMap = products.reduce((map, product) => {
+      map[product.id] = product;
+      return map;
+    }, {});
+
+    const items = cartItems.map((item) => ({
+      ...item,
+      product: productMap[item.product_id] || null,
+    }));
+
+    const total = items.reduce(
+      (sum, item) => sum + (item.product ? item.product.price * item.quantity : 0),
+      0
+    );
 
     res.status(200).json({
-      items: data,
+      items,
       total,
     });
   } catch (error) {
@@ -103,6 +130,7 @@ exports.getCart = async (req, res) => {
  */
 exports.updateCartItem = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { cartItemId } = req.params;
     const { quantity } = req.body;
 
@@ -114,9 +142,13 @@ exports.updateCartItem = async (req, res) => {
       .from('cart_items')
       .update({ quantity })
       .eq('id', cartItemId)
+      .eq('user_id', userId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Cart item not found' });
+    }
 
     res.status(200).json({
       message: 'Cart item updated',
@@ -132,14 +164,20 @@ exports.updateCartItem = async (req, res) => {
  */
 exports.removeFromCart = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { cartItemId } = req.params;
 
-    const { error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('cart_items')
       .delete()
-      .eq('id', cartItemId);
+      .eq('id', cartItemId)
+      .eq('user_id', userId)
+      .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Cart item not found' });
+    }
 
     res.status(200).json({ message: 'Item removed from cart' });
   } catch (error) {

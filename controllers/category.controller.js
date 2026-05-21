@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -64,6 +64,7 @@ exports.getCategories = async (req, res) => {
  */
 exports.updateCategory = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { categoryId } = req.params;
     const { name, description, icon } = req.body;
 
@@ -75,9 +76,13 @@ exports.updateCategory = async (req, res) => {
         icon: icon || undefined,
       })
       .eq('id', categoryId)
+      .eq('merchant_id', merchantId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
 
     res.status(200).json({
       message: 'Category updated successfully',
@@ -93,14 +98,20 @@ exports.updateCategory = async (req, res) => {
  */
 exports.deleteCategory = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { categoryId } = req.params;
 
-    const { error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('categories')
       .delete()
-      .eq('id', categoryId);
+      .eq('id', categoryId)
+      .eq('merchant_id', merchantId)
+      .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
 
     res.status(200).json({ message: 'Category deleted successfully' });
   } catch (error) {

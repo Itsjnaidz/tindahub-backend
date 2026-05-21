@@ -15,12 +15,6 @@ router.post('/', orderController.createOrder);
 router.get('/', orderController.getUserOrders);
 
 /**
- * GET /api/order/:orderId
- * Get order by ID
- */
-router.get('/:orderId', orderController.getOrderById);
-
-/**
  * PUT /api/order/:orderId/status
  * Update order status (state machine)
  */
@@ -31,5 +25,11 @@ router.put('/:orderId/status', orderController.updateOrderStatus);
  * Cancel order
  */
 router.put('/:orderId/cancel', orderController.cancelOrder);
+
+/**
+ * GET /api/order/:orderId
+ * Get order by ID
+ */
+router.get('/:orderId', orderController.getOrderById);
 
 module.exports = router;

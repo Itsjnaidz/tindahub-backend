@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -7,10 +7,11 @@ const { v4: uuidv4 } = require('uuid');
 exports.createProduct = async (req, res) => {
   try {
     const merchantId = req.user.id;
-    const { name, description, price, categoryId, stock, image } = req.body;
+    const { name, description, price, categoryId, stock, inventory, image } = req.body;
+    const effectiveStock = stock ?? inventory;
 
-    if (!name || price == null || stock == null) {
-      return res.status(400).json({ error: 'name, price, and stock are required' });
+    if (!name || price == null || effectiveStock == null) {
+      return res.status(400).json({ error: 'name, price, and stock/inventory are required' });
     }
 
     const { data, error } = await supabaseAdmin
@@ -23,7 +24,7 @@ exports.createProduct = async (req, res) => {
           description: description || null,
           price,
           category_id: categoryId || null,
-          stock,
+          stock: effectiveStock,
           image: image || null,
           created_at: new Date(),
         },
@@ -68,16 +69,20 @@ exports.getMerchantProducts = async (req, res) => {
  */
 exports.getProductById = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { productId } = req.params;
 
     const { data, error } = await supabaseAdmin
       .from('products')
       .select('*')
       .eq('id', productId)
+      .eq('merchant_id', merchantId)
       .is('deleted_at', null)
       .single();
 
-    if (error) throw error;
+    if (error || !data) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
 
     res.status(200).json(data);
   } catch (error) {
@@ -90,23 +95,29 @@ exports.getProductById = async (req, res) => {
  */
 exports.updateProduct = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { productId } = req.params;
-    const { name, description, price, stock, image } = req.body;
+    const { name, description, price, stock, inventory, image } = req.body;
 
     const payload = {};
     if (name !== undefined) payload.name = name;
     if (description !== undefined) payload.description = description;
     if (price !== undefined) payload.price = price;
     if (stock !== undefined) payload.stock = stock;
+    if (inventory !== undefined) payload.stock = inventory;
     if (image !== undefined) payload.image = image;
 
     const { data, error } = await supabaseAdmin
       .from('products')
       .update(payload)
       .eq('id', productId)
+      .eq('merchant_id', merchantId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
 
     res.status(200).json({
       message: 'Product updated successfully',
@@ -122,15 +133,20 @@ exports.updateProduct = async (req, res) => {
  */
 exports.deleteProduct = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { productId } = req.params;
 
     const { data, error } = await supabaseAdmin
       .from('products')
       .update({ deleted_at: new Date() })
       .eq('id', productId)
+      .eq('merchant_id', merchantId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
 
     res.status(200).json({
       message: 'Product deleted successfully',
@@ -146,6 +162,7 @@ exports.deleteProduct = async (req, res) => {
  */
 exports.updateInventory = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { productId } = req.params;
     const { quantity } = req.body;
 
@@ -157,9 +174,13 @@ exports.updateInventory = async (req, res) => {
       .from('products')
       .update({ stock: quantity })
       .eq('id', productId)
+      .eq('merchant_id', merchantId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
 
     res.status(200).json({
       message: 'Inventory updated successfully',

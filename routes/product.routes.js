@@ -15,6 +15,12 @@ router.post('/', productController.createProduct);
 router.get('/', productController.getMerchantProducts);
 
 /**
+ * PUT /api/product/:productId/inventory
+ * Update product inventory
+ */
+router.put('/:productId/inventory', productController.updateInventory);
+
+/**
  * GET /api/product/:productId
  * Get product by ID
  */
@@ -31,11 +37,5 @@ router.put('/:productId', productController.updateProduct);
  * Soft delete product
  */
 router.delete('/:productId', productController.deleteProduct);
-
-/**
- * PUT /api/product/:productId/inventory
- * Update product inventory
- */
-router.put('/:productId/inventory', productController.updateInventory);
 
 module.exports = router;

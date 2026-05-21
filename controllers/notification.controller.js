@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -82,11 +82,17 @@ exports.sendWhatsAppNotification = async (req, res) => {
  */
 exports.getNotificationHistory = async (req, res) => {
   try {
-    const { limit = 50 } = req.query;
+    const recipientPhone = req.user?.phone;
+    const limit = Number(req.query.limit || 50);
+
+    if (!recipientPhone) {
+      return res.status(400).json({ error: 'Authenticated user phone is required to retrieve notifications' });
+    }
 
     const { data, error } = await supabaseAdmin
       .from('notifications')
       .select('*')
+      .eq('recipient', recipientPhone)
       .order('created_at', { ascending: false })
       .limit(limit);
 

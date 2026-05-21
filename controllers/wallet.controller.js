@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 
 /**
  * Get merchant wallet balance
@@ -13,7 +13,7 @@ exports.getWalletBalance = async (req, res) => {
       .eq('merchant_id', merchantId)
       .single();
 
-    if (error) throw error;
+    if (error && error.code !== 'PGRST116') throw error;
 
     res.status(200).json({
       merchantId,
@@ -30,7 +30,7 @@ exports.getWalletBalance = async (req, res) => {
 exports.getWalletTransactions = async (req, res) => {
   try {
     const merchantId = req.user.id;
-    const { limit = 50 } = req.query;
+    const limit = Number(req.query.limit) || 50;
 
     const { data, error } = await supabaseAdmin
       .from('wallet_transactions')
@@ -68,8 +68,8 @@ exports.withdrawFunds = async (req, res) => {
 
     if (walletError) throw walletError;
 
-    if (walletData.balance < amount) {
-      return res.status(400).json({ error: 'Insufficient balance' });
+    if (!walletData || walletData.balance == null || walletData.balance < amount) {
+      return res.status(400).json({ error: 'Insufficient balance or wallet not found' });
     }
 
     // Update wallet balance

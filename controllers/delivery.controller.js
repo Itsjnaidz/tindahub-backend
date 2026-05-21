@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -6,10 +6,25 @@ const { v4: uuidv4 } = require('uuid');
  */
 exports.setTrackingInfo = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { orderId, trackingNumber, carrier, estimatedDelivery } = req.body;
 
     if (!orderId || !trackingNumber || !carrier) {
       return res.status(400).json({ error: 'orderId, trackingNumber, and carrier are required' });
+    }
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.merchant_id !== merchantId) {
+      return res.status(403).json({ error: 'Access denied' });
     }
 
     const { data, error } = await supabaseAdmin
@@ -42,7 +57,22 @@ exports.setTrackingInfo = async (req, res) => {
  */
 exports.getTrackingInfo = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { orderId } = req.params;
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.customer_id !== userId && order.merchant_id !== userId) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
 
     const { data, error } = await supabaseAdmin
       .from('deliveries')
@@ -50,7 +80,9 @@ exports.getTrackingInfo = async (req, res) => {
       .eq('order_id', orderId)
       .single();
 
-    if (error) throw error;
+    if (error || !data) {
+      return res.status(404).json({ error: 'Delivery tracking not found' });
+    }
 
     res.status(200).json(data);
   } catch (error) {
@@ -63,6 +95,7 @@ exports.getTrackingInfo = async (req, res) => {
  */
 exports.updateDeliveryStatus = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { orderId } = req.params;
     const { status } = req.body;
 
@@ -75,9 +108,13 @@ exports.updateDeliveryStatus = async (req, res) => {
       .from('orders')
       .update({ delivery_status: status })
       .eq('id', orderId)
+      .eq('merchant_id', merchantId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
 
     res.status(200).json({
       message: 'Delivery status updated',

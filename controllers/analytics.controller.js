@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 
 /**
  * Get analytics data for merchant
@@ -16,7 +16,10 @@ exports.getMerchantAnalytics = async (req, res) => {
 
     if (salesError) throw salesError;
 
-    const totalSales = salesData.reduce((sum, order) => sum + order.total_amount, 0);
+    const totalSales = salesData.reduce(
+      (sum, order) => sum + Number(order.total_amount || 0),
+      0
+    );
 
     // Get total orders
     const { data: ordersData, error: ordersError } = await supabaseAdmin

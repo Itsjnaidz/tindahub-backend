@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -42,15 +42,19 @@ exports.registerStore = async (req, res) => {
  */
 exports.getStoreInfo = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { storeId } = req.params;
 
     const { data, error } = await supabaseAdmin
       .from('stores')
       .select('*')
       .eq('id', storeId)
+      .eq('merchant_id', merchantId)
       .single();
 
-    if (error) throw error;
+    if (error || !data) {
+      return res.status(404).json({ error: 'Store not found' });
+    }
 
     res.status(200).json(data);
   } catch (error) {
@@ -63,6 +67,7 @@ exports.getStoreInfo = async (req, res) => {
  */
 exports.updateStore = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { storeId } = req.params;
     const { name, description, address, contactPhone, email } = req.body;
 
@@ -78,9 +83,13 @@ exports.updateStore = async (req, res) => {
       .from('stores')
       .update(payload)
       .eq('id', storeId)
+      .eq('merchant_id', merchantId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Store not found' });
+    }
 
     res.status(200).json({ message: 'Store updated successfully', store: data[0] });
   } catch (error) {

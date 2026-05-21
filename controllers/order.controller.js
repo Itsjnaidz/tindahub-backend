@@ -1,4 +1,4 @@
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabaseAdmin } = require('../config/supabase');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -66,6 +66,7 @@ exports.getUserOrders = async (req, res) => {
  */
 exports.getOrderById = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { orderId } = req.params;
 
     const { data, error } = await supabaseAdmin
@@ -74,7 +75,13 @@ exports.getOrderById = async (req, res) => {
       .eq('id', orderId)
       .single();
 
-    if (error) throw error;
+    if (error || !data) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (data.customer_id !== userId && data.merchant_id !== userId) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
 
     res.status(200).json(data);
   } catch (error) {
@@ -87,6 +94,7 @@ exports.getOrderById = async (req, res) => {
  */
 exports.updateOrderStatus = async (req, res) => {
   try {
+    const merchantId = req.user.id;
     const { orderId } = req.params;
     const { status } = req.body;
 
@@ -99,9 +107,13 @@ exports.updateOrderStatus = async (req, res) => {
       .from('orders')
       .update({ status, updated_at: new Date() })
       .eq('id', orderId)
+      .eq('merchant_id', merchantId)
       .select();
 
     if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
 
     res.status(200).json({
       message: 'Order status updated',
@@ -117,8 +129,23 @@ exports.updateOrderStatus = async (req, res) => {
  */
 exports.cancelOrder = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { orderId } = req.params;
     const { reason } = req.body;
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.customer_id !== userId && order.merchant_id !== userId) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
 
     const { data, error } = await supabaseAdmin
       .from('orders')
