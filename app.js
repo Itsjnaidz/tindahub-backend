@@ -36,7 +36,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', authRoutes);
+app.get('/api/auth', authRoutes);
 app.use('/api/analytics', authMiddleware, analyticsRoutes);
 app.use('/api/cart', authMiddleware, cartRoutes);
 app.use('/api/category', authMiddleware, categoryRoutes);
