@@ -67,10 +67,26 @@ app.use((req, res, next) => {
 // Error Handling Middleware (must be last)
 app.use(errorHandler);
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`TindaHub Backend Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-});
+// Start Server with error handling for EADDRINUSE (port in use)
+const startServer = (port) => {
+  const server = app.listen(port, () => {
+    console.log(`TindaHub Backend Server running on port ${port}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+  });
+
+  server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+      const nextPort = Number(port) + 1;
+      console.warn(`Port ${port} in use, retrying on port ${nextPort}...`);
+      // attempt to close and restart on next port
+      server.close(() => startServer(nextPort));
+    } else {
+      console.error('Server error:', err);
+      process.exit(1);
+    }
+  });
+};
+
+startServer(PORT);
 
 module.exports = app;
