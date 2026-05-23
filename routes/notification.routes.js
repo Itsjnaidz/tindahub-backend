@@ -9,12 +9,6 @@ const notificationController = require('../controllers/notification.controller')
 router.post('/sms', notificationController.sendSMSNotification);
 
 /**
- * POST /api/notification/whatsapp
- * Send WhatsApp notification
- */
-router.post('/whatsapp', notificationController.sendWhatsAppNotification);
-
-/**
  * GET /api/notification/history
  * Get notification history
  */

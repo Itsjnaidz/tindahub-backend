@@ -97,13 +97,6 @@ POST {{baseUrl}}/api/notification/sms
     "message": "Hello from TindaHub"
   }
 
-POST {{baseUrl}}/api/notification/whatsapp
-  Body:
-  {
-    "phone": "09171234567",
-    "message": "Hello from TindaHub"
-  }
-
 GET  {{baseUrl}}/api/notification/history - Body: none
 
 Order Endpoints

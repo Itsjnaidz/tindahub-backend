@@ -24,7 +24,7 @@ exports.generateOTP = async (req, res) => {
 
     if (error) throw error;
 
-    // In production, send OTP via SMS/WhatsApp
+    // In production, send OTP via SMS
     console.log(`OTP for ${phone}: ${otp}`);
 
     res.status(200).json({
