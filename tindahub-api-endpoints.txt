@@ -3,8 +3,11 @@ TindaHub Backend API Endpoints
 Base URL placeholder: {{baseUrl}}
 
 Notes:
-- All /api/* endpoints require the header: Authorization: Bearer {{authToken}}
+- All protected /api/* endpoints require the header: Authorization: Bearer {{authToken}}
+- Auth routes `/api/auth/generate-otp` and `/api/auth/verify-otp` do not require a token
 - Use Content-Type: application/json for POST and PUT requests
+- Body examples below are raw JSON payloads, not request editor labels
+- `productId`, `orderId`, `categoryId`, `storeId`, `cartItemId`, and `merchantId` are UUIDs in this backend
 
 Public Endpoints
 ----------------
@@ -39,7 +42,7 @@ Cart Endpoints
 POST   {{baseUrl}}/api/cart/add
   Body:
   {
-    "productId": "abc123",
+    "productId": "{{productId}}",
     "quantity": 1
   }
 
@@ -104,10 +107,12 @@ Order Endpoints
 POST {{baseUrl}}/api/order
   Body:
   {
+    "merchantId": "{{merchantId}}",
     "items": [
-      { "productId": "abc123", "quantity": 1 }
+      { "productId": "{{productId}}", "quantity": 1 }
     ],
-    "shippingAddress": "123 Main St"
+    "shippingAddress": "123 Main St",
+    "totalAmount": 100.00
   }
 
 GET  {{baseUrl}}/api/order               - Body: none
@@ -118,7 +123,11 @@ PUT  {{baseUrl}}/api/order/{{orderId}}/status
     "status": "Completed"
   }
 
-PUT  {{baseUrl}}/api/order/{{orderId}}/cancel - Body: none
+PUT  {{baseUrl}}/api/order/{{orderId}}/cancel
+  Body:
+  {
+    "reason": "Customer changed mind"
+  }
 
 Payment Endpoints
 -----------------
@@ -145,7 +154,7 @@ POST {{baseUrl}}/api/product
   {
     "name": "Sample Product",
     "price": 199.99,
-    "inventory": 10
+    "stock": 10
   }
 
 GET    {{baseUrl}}/api/product               - Body: none
@@ -160,7 +169,7 @@ DELETE {{baseUrl}}/api/product/{{productId}} - Body: none
 PUT    {{baseUrl}}/api/product/{{productId}}/inventory
   Body:
   {
-    "inventory": 20
+    "quantity": 20
   }
 
 Store Endpoints
