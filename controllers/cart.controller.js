@@ -18,7 +18,7 @@ exports.addToCart = async (req, res) => {
       .from('products')
       .select('*')
       .eq('id', productId)
-      .eq('deleted_at', null)
+      .is('deleted_at', null)
       .single();
 
     if (productError || !product) {

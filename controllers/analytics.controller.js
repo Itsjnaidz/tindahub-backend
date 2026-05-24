@@ -36,7 +36,7 @@ exports.getMerchantAnalytics = async (req, res) => {
       .from('products')
       .select('id')
       .eq('merchant_id', merchantId)
-      .eq('deleted_at', null);
+      .is('deleted_at', null);
 
     if (productsError) throw productsError;
 
